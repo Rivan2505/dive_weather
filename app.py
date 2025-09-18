@@ -5,7 +5,7 @@ import json
 from dataclasses import dataclass
 from datetime import date
 from typing import Any, Dict, List, Literal, Optional, Tuple
-
+from fastapi.middleware.cors import CORSMiddleware 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field, validator
 
@@ -331,7 +331,17 @@ app = FastAPI(title="DiveWise Weather API", version="1.0.0")
 REALTIME_POLICY = SafetyPolicy()
 FORECAST_POLICY = SafetyPolicy()  # you can tweak thresholds separately if desired
 
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",  # React dev server
+        "http://localhost:3001",  # Alternative React port
+        "*"  # Allow all origins (for development only)
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 @app.get("/health")
 def health():
     return {"ok": True}
